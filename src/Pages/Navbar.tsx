@@ -18,6 +18,22 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Handle mobile nav link click: close menu + smooth scroll
+  const handleMobileNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    setIsOpen(false);
+    setTimeout(() => {
+      if (href === '#') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const target = document.querySelector(href);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+    }, 300); // wait for menu close animation to finish
+  };
+
   const navLinks = [
     { name: 'الرئيسية', href: '#' },
     { name: 'من نحن', href: '#about' },
@@ -37,7 +53,19 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
-          {/* Logo */}
+          {/* Mobile Menu Button - shown on left for RTL */}
+          <button
+            onClick={() => setIsOpen(!isOpen)}
+            className={`md:hidden p-2 rounded-lg transition-colors ${
+              scrolled
+                ? 'text-gray-900 hover:bg-gray-100'
+                : 'text-white hover:bg-white/10'
+            }`}
+          >
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {/* Logo - centered/right on mobile, left on desktop */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -70,20 +98,6 @@ export function Navbar() {
               </motion.a>
             ))}
           </div>
-
-         
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors ${
-              scrolled
-                ? 'text-gray-900 hover:bg-gray-100'
-                : 'text-white hover:bg-white/10'
-            }`}
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
       </div>
 
@@ -102,8 +116,8 @@ export function Navbar() {
                 <a
                   key={link.name}
                   href={link.href}
-                  className="block text-gray-700 hover:text-gray-900 transition-colors py-2"
-                  onClick={() => setIsOpen(false)}
+                  className="block text-gray-700 hover:text-gray-900 transition-colors py-2 text-right"
+                  onClick={(e) => handleMobileNavClick(e, link.href)}
                 >
                   {link.name}
                 </a>

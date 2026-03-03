@@ -1,7 +1,6 @@
 import { Navbar } from "./Navbar";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-
 export function NotFound() {
   return (
     <div className="min-h-screen bg-white">
